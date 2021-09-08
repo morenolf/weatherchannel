@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.lucasmoreno.weatherchannel.builder.impl.PlanetBuilder;
 import com.lucasmoreno.weatherchannel.director.SolarSystemDirector;
-import com.lucasmoreno.weatherchannel.dto.CartesianCoordinatesDto;
 import com.lucasmoreno.weatherchannel.dto.PlanetDto;
 import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 

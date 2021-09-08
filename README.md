@@ -1,2 +1,2 @@
 # weatherchannel
-api service for weather channel application
+Api service for weather channel application

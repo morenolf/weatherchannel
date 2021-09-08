@@ -34,6 +34,7 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 	 * their properties
 	 */
 	public SolarSystemServiceImpl() {
+		LOGGER.info("Creating solar system");
 		this.planets = new ArrayList<>();
 
 		PlanetBuilder planetBuilder = new PlanetBuilder();

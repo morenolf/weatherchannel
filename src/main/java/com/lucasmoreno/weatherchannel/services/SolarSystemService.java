@@ -7,6 +7,6 @@ package com.lucasmoreno.weatherchannel.services;
  * @author Lucas Moreno
  *
  */
-public interface SolarSystem {
+public interface SolarSystemService {
 
 }

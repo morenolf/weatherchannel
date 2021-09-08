@@ -12,7 +12,7 @@ import com.lucasmoreno.weatherchannel.builder.impl.PlanetBuilder;
 import com.lucasmoreno.weatherchannel.director.SolarSystemDirector;
 import com.lucasmoreno.weatherchannel.dto.CartesianCoordinatesDto;
 import com.lucasmoreno.weatherchannel.dto.PlanetDto;
-import com.lucasmoreno.weatherchannel.services.SolarSystem;
+import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 
 /**
  * Service that handles Solar system logic and his construction as well in order
@@ -22,8 +22,8 @@ import com.lucasmoreno.weatherchannel.services.SolarSystem;
  *
  */
 @Service
-public class SolarSystemImpl implements SolarSystem {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SolarSystemImpl.class);
+public class SolarSystemServiceImpl implements SolarSystemService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SolarSystemServiceImpl.class);
 
 	private List<PlanetDto> planets;
 
@@ -34,7 +34,7 @@ public class SolarSystemImpl implements SolarSystem {
 	 * Creates the Solar system based on builder pattern using known planets and
 	 * their properties
 	 */
-	public SolarSystemImpl() {
+	public SolarSystemServiceImpl() {
 		this.planets = new ArrayList<>();
 
 		PlanetBuilder planetBuilder = new PlanetBuilder();

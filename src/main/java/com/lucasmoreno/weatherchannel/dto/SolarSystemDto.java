@@ -1,6 +1,12 @@
 package com.lucasmoreno.weatherchannel.dto;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * 
@@ -13,7 +19,7 @@ import java.util.List;
 public class SolarSystemDto {
 
 	private List<PlanetDto> planets;
-	private CartesianCoordinatesDto sunPosition;
+	private Point2D sunPosition;
 	private long day;
 	private boolean solarSystemAlignment;
 	private boolean planetsAlignment;
@@ -21,8 +27,7 @@ public class SolarSystemDto {
 
 	public SolarSystemDto(List<PlanetDto> planets) {
 		this.planets = planets;
-		sunPosition.setxPosition(0.0);
-		sunPosition.setyPosition(0.0);
+		this.sunPosition = new Point2D.Double(0.0, 0.0);
 		this.setAstronomicalEvents();
 	}
 
@@ -35,18 +40,53 @@ public class SolarSystemDto {
 	}
 
 	private boolean gemoetricalAlignmentWithSunInside() {
-		// TODO Auto-generated method stub
+
+		// TODO
+		/*
+		this.planets.get(0);
+		double w1 = (e.x * (a.y - p.y) + e.y * (p.x - a.x)) / (d.x * e.y - d.y * e.x);
+		double w2 = (p.y - a.y - w1 * d.y) / e.y;
+		*/
 		return false;
+	}
+	
+	private double calculateTriangleArea(Point2D pointA, Point2D pointB, Point2D pointC) {
+		return Math.abs((pointA.getX()*(pointB.getY()-pointC.getY()) + pointB.getX()*(pointC.getY()-pointA.getY())+
+				pointC.getX()*(pointA.getY()-pointB.getY()))/2.0);
 	}
 
 	private boolean onlyPlanetsAlign() {
-		// TODO Auto-generated method stub
-		return false;
+		PlanetDto farestPlanetFromSun = this.planets.stream().max(Comparator.comparing(PlanetDto::getDistanceFromSun))
+				.orElseThrow(NoSuchElementException::new);
+
+		PlanetDto closestPlanetFromSun = this.planets.stream().min(Comparator.comparing(PlanetDto::getDistanceFromSun))
+				.orElseThrow(NoSuchElementException::new);
+
+		Line2D line = new Line2D.Double(closestPlanetFromSun.getCartesianCoordinates(),
+				farestPlanetFromSun.getCartesianCoordinates());
+
+		for (PlanetDto planet : planets) {
+			if (!line.contains(planet.getCartesianCoordinates())) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private boolean allPlanetsAlignWithSun() {
-		//TODO
-		return false;
+		PlanetDto farestPlanetFromSun = this.planets.stream().max(Comparator.comparing(PlanetDto::getDistanceFromSun))
+				.orElseThrow(NoSuchElementException::new);
+
+		Line2D line = new Line2D.Double(this.sunPosition, farestPlanetFromSun.getCartesianCoordinates());
+
+		for (PlanetDto planet : planets) {
+			if (!line.contains(planet.getCartesianCoordinates())) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public boolean isSolarSystemAlignment() {
@@ -77,16 +117,16 @@ public class SolarSystemDto {
 		return planets;
 	}
 
-	public CartesianCoordinatesDto getSunPosition() {
+	public Point2D getSunPosition() {
 		return sunPosition;
+	}
+
+	public void setSunPosition(Point2D sunPosition) {
+		this.sunPosition = sunPosition;
 	}
 
 	public void setPlanets(List<PlanetDto> planets) {
 		this.planets = planets;
-	}
-
-	public void setSunPosition(CartesianCoordinatesDto sunPosition) {
-		this.sunPosition = sunPosition;
 	}
 
 	public long getDay() {

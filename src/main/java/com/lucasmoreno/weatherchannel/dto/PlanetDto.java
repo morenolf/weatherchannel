@@ -1,5 +1,7 @@
 package com.lucasmoreno.weatherchannel.dto;
 
+import java.awt.geom.Point2D;
+
 /**
  * Data structure to represent a planet on a solar system.
  * 
@@ -11,7 +13,7 @@ public class PlanetDto {
 	private double distanceFromSun;
 	private double position;
 	private double translationSpeed;
-	private CartesianCoordinatesDto cartesianCoordinatesDto;
+	private Point2D cartesianCoordinates;
 
 	public PlanetDto(double distanceFromSun, double position, double translationSpeed) {
 		this.distanceFromSun = distanceFromSun;
@@ -43,12 +45,12 @@ public class PlanetDto {
 		this.translationSpeed = translationSpeed;
 	}
 
-	public CartesianCoordinatesDto getCartesianCoordinatesDto() {
-		return cartesianCoordinatesDto;
+	public Point2D getCartesianCoordinates() {
+		return cartesianCoordinates;
 	}
 
-	public void setCartesianCoordinatesDto(CartesianCoordinatesDto cartesianCoordinatesDto) {
-		this.cartesianCoordinatesDto = cartesianCoordinatesDto;
+	public void setCartesianCoordinates(Point2D cartesianCoordinates) {
+		this.cartesianCoordinates = cartesianCoordinates;
 	}
 
 }

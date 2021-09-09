@@ -1,7 +1,8 @@
 package com.lucasmoreno.weatherchannel.director;
 
+import java.awt.geom.Point2D;
+
 import com.lucasmoreno.weatherchannel.builder.Builder;
-import com.lucasmoreno.weatherchannel.dto.CartesianCoordinatesDto;
 
 /**
  * Director for builder pattern dedicated to build Solar system with their
@@ -24,7 +25,7 @@ public class SolarSystemDirector {
 		builder.setDistanceFromSun(distanceFromSun);
 		builder.setPosition(0.0);
 		builder.setTranslationSpeed(1);
-		builder.setCartesianCoordinates(new CartesianCoordinatesDto(position, distanceFromSun));
+		builder.setCartesianCoordinates(new Point2D.Double(position, distanceFromSun));
 	}
 
 	/**
@@ -39,7 +40,7 @@ public class SolarSystemDirector {
 		builder.setDistanceFromSun(distanceFromSun);
 		builder.setPosition(position);
 		builder.setTranslationSpeed(3);
-		builder.setCartesianCoordinates(new CartesianCoordinatesDto(position, distanceFromSun));
+		builder.setCartesianCoordinates(new Point2D.Double(position, distanceFromSun));
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class SolarSystemDirector {
 		builder.setDistanceFromSun(distanceFromSun);
 		builder.setPosition(position);
 		builder.setTranslationSpeed(-5);
-		builder.setCartesianCoordinates(new CartesianCoordinatesDto(position, distanceFromSun));
+		builder.setCartesianCoordinates(new Point2D.Double(position, distanceFromSun));
 	}
 
 

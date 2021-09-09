@@ -1,7 +1,8 @@
 package com.lucasmoreno.weatherchannel.builder.impl;
 
+import java.awt.geom.Point2D;
+
 import com.lucasmoreno.weatherchannel.builder.Builder;
-import com.lucasmoreno.weatherchannel.dto.CartesianCoordinatesDto;
 import com.lucasmoreno.weatherchannel.dto.PlanetDto;
 
 public class PlanetBuilder implements Builder {
@@ -9,7 +10,7 @@ public class PlanetBuilder implements Builder {
 	private double distanceFromSun;
 	private double position;
 	private double translationSpeed;
-	private CartesianCoordinatesDto cartesianCoordinatesDto;
+	private Point2D cartesianCoordinates;
 	
 	@Override
 	public void setDistanceFromSun(double distanceFromSun) {
@@ -34,12 +35,12 @@ public class PlanetBuilder implements Builder {
 	}
 
 	@Override
-	public void setCartesianCoordinates(CartesianCoordinatesDto cartesianCoordinatesDto) {
-		this.cartesianCoordinatesDto = cartesianCoordinatesDto;		
+	public void setCartesianCoordinates(Point2D cartesianCoordinates) {
+		this.cartesianCoordinates = cartesianCoordinates;		
 	}
 
-	public CartesianCoordinatesDto getCartesianCoordinatesDto() {
-		return cartesianCoordinatesDto;
+	public Point2D getCartesianCoordinates() {
+		return cartesianCoordinates;
 	}
 
 

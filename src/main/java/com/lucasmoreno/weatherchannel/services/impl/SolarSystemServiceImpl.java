@@ -1,5 +1,6 @@
 package com.lucasmoreno.weatherchannel.services.impl;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.lucasmoreno.weatherchannel.builder.impl.PlanetBuilder;
 import com.lucasmoreno.weatherchannel.director.SolarSystemDirector;
-import com.lucasmoreno.weatherchannel.dto.CartesianCoordinatesDto;
 import com.lucasmoreno.weatherchannel.dto.PlanetDto;
 import com.lucasmoreno.weatherchannel.dto.SolarSystemDto;
-import com.lucasmoreno.weatherchannel.entity.SolarSystemForecastEntity;
 import com.lucasmoreno.weatherchannel.services.ForecastService;
 import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 
@@ -70,7 +69,7 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 
 		}
 		
-		this.forecastService.generateForecastReport();
+		this.forecastService.generateForecastReport(years);
 
 	}
 
@@ -83,15 +82,15 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 	public void translateOneDay() {
 		for (PlanetDto planet : solarSystemDto.getPlanets()) {
 			planet.setPosition(planet.getPosition() + planet.getTranslationSpeed());
-			planet.setCartesianCoordinatesDto(this.calculateCartesianCoodrinates(planet.getPosition(), planet.getDistanceFromSun()));
+			planet.setCartesianCoordinates(this.calculateCartesianCoodrinates(planet.getPosition(), planet.getDistanceFromSun()));
 		}
 		solarSystemDto.setAstronomicalEvents();
 	}
 	
-	public CartesianCoordinatesDto calculateCartesianCoodrinates(double position, double distanceFromSun) {
+	public Point2D calculateCartesianCoodrinates(double position, double distanceFromSun) {
 		double xPosition = java.lang.Math.cos(java.lang.Math.toRadians(position)) * distanceFromSun;
 		double yPosition = java.lang.Math.sin(java.lang.Math.toRadians(position)) * distanceFromSun;
-		return new CartesianCoordinatesDto(xPosition, yPosition);
+		return new Point2D.Double(xPosition, yPosition);
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.lucasmoreno.weatherchannel.builder;
 
-import com.lucasmoreno.weatherchannel.dto.CartesianCoordinatesDto;
+import java.awt.geom.Point2D;
 
 /**
  * 
@@ -17,6 +17,6 @@ public interface Builder {
 
 	void setTranslationSpeed(double translationSpeed);
 
-	void setCartesianCoordinates(CartesianCoordinatesDto cartesianCoordinatesDto);
+	void setCartesianCoordinates(Point2D cartesianCoordinatesDto);
 
 }

@@ -9,4 +9,8 @@ package com.lucasmoreno.weatherchannel.services;
  */
 public interface SolarSystemService {
 
+	public long getDay();
+
+	void translateOneDay();
+
 }

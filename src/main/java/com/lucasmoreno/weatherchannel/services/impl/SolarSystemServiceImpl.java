@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.lucasmoreno.weatherchannel.builder.impl.PlanetBuilder;
 import com.lucasmoreno.weatherchannel.director.SolarSystemDirector;
+import com.lucasmoreno.weatherchannel.dto.CartesianCoordinatesDto;
 import com.lucasmoreno.weatherchannel.dto.PlanetDto;
+import com.lucasmoreno.weatherchannel.dto.SolarSystemDto;
+import com.lucasmoreno.weatherchannel.entity.SolarSystemForecastEntity;
+import com.lucasmoreno.weatherchannel.services.ForecastService;
 import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 
 /**
@@ -24,10 +28,15 @@ import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 public class SolarSystemServiceImpl implements SolarSystemService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarSystemServiceImpl.class);
 
-	private List<PlanetDto> planets;
+	private static final long DAYS_PER_YEAR = 360;
+
+	private SolarSystemDto solarSystemDto;
 
 	@Autowired
 	private SolarSystemDirector solarSystemDirector;
+
+	@Autowired
+	private ForecastService forecastService;
 
 	/**
 	 * Creates the Solar system based on builder pattern using known planets and
@@ -35,15 +44,54 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 	 */
 	public SolarSystemServiceImpl() {
 		LOGGER.info("Creating solar system");
-		this.planets = new ArrayList<>();
+		List<PlanetDto> planets = new ArrayList<>();
 
 		PlanetBuilder planetBuilder = new PlanetBuilder();
 		solarSystemDirector.constructBetasoides(planetBuilder);
-		this.planets.add(planetBuilder.getResult());
+		planets.add(planetBuilder.getResult());
 		solarSystemDirector.constructVulcan(planetBuilder);
-		this.planets.add(planetBuilder.getResult());
+		planets.add(planetBuilder.getResult());
 		solarSystemDirector.constructBetasoides(planetBuilder);
-		this.planets.add(planetBuilder.getResult());
+		planets.add(planetBuilder.getResult());
+		this.solarSystemDto = new SolarSystemDto(planets);
+	}
+
+	/**
+	 * Generates the forecast conditions for {@value} years in the future.
+	 */
+	public void generateForecastByYears(long years) {
+
+		long dayByPeriod = years * DAYS_PER_YEAR;
+
+		for (int i = 0; i < dayByPeriod; i++) {
+
+			this.forecastService.generateForecast(dayByPeriod, this.solarSystemDto);
+			this.translateOneDay();
+
+		}
+		
+		this.forecastService.generateForecastReport();
+
+	}
+
+	@Override
+	public long getDay() {
+		return this.solarSystemDto.getDay();
+	}
+
+	@Override
+	public void translateOneDay() {
+		for (PlanetDto planet : solarSystemDto.getPlanets()) {
+			planet.setPosition(planet.getPosition() + planet.getTranslationSpeed());
+			planet.setCartesianCoordinatesDto(this.calculateCartesianCoodrinates(planet.getPosition(), planet.getDistanceFromSun()));
+		}
+		solarSystemDto.setAstronomicalEvents();
+	}
+	
+	public CartesianCoordinatesDto calculateCartesianCoodrinates(double position, double distanceFromSun) {
+		double xPosition = java.lang.Math.cos(java.lang.Math.toRadians(position)) * distanceFromSun;
+		double yPosition = java.lang.Math.sin(java.lang.Math.toRadians(position)) * distanceFromSun;
+		return new CartesianCoordinatesDto(xPosition, yPosition);
 	}
 
 }

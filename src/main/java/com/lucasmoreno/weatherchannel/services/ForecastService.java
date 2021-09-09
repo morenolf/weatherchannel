@@ -1,9 +1,7 @@
 package com.lucasmoreno.weatherchannel.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.lucasmoreno.weatherchannel.dto.ForecastSolarSystemRepository;
+import com.lucasmoreno.weatherchannel.dto.SolarSystemDto;
+import com.lucasmoreno.weatherchannel.entity.SolarSystemForecastEntity;
 
 /**
  * 
@@ -13,5 +11,11 @@ import com.lucasmoreno.weatherchannel.dto.ForecastSolarSystemRepository;
  *
  */
 public interface ForecastService {
+	public void generateForecast(long dayByPeriod, SolarSystemDto solarSystemDto);
 	
+	public void generateForecastReport();
+
+	public SolarSystemForecastEntity calculateForecast(long day, SolarSystemDto solarSystemDto);
+
+	public SolarSystemForecastEntity getTodayForecast(SolarSystemDto solarSystemDto);
 }

@@ -24,7 +24,7 @@ public class SolarSystemDirector {
 		builder.setDistanceFromSun(distanceFromSun);
 		builder.setPosition(0.0);
 		builder.setTranslationSpeed(1);
-		this.calculateCartesianCoodrinates(position, distanceFromSun);
+		builder.setCartesianCoordinates(new CartesianCoordinatesDto(position, distanceFromSun));
 	}
 
 	/**
@@ -37,9 +37,9 @@ public class SolarSystemDirector {
 		double distanceFromSun = 2000.0;
 		double position = 0.0;
 		builder.setDistanceFromSun(distanceFromSun);
-		builder.setPosition(0.0);
+		builder.setPosition(position);
 		builder.setTranslationSpeed(3);
-		this.calculateCartesianCoodrinates(position, distanceFromSun);
+		builder.setCartesianCoordinates(new CartesianCoordinatesDto(position, distanceFromSun));
 	}
 
 	/**
@@ -52,15 +52,11 @@ public class SolarSystemDirector {
 		double distanceFromSun = 1000.0;
 		double position = 0.0;
 		builder.setDistanceFromSun(distanceFromSun);
-		builder.setPosition(0.0);
+		builder.setPosition(position);
 		builder.setTranslationSpeed(-5);
-		this.calculateCartesianCoodrinates(position, distanceFromSun);
+		builder.setCartesianCoordinates(new CartesianCoordinatesDto(position, distanceFromSun));
 	}
 
-	public CartesianCoordinatesDto calculateCartesianCoodrinates(double position, double distanceFromSun) {
-		double xPosition = java.lang.Math.cos(java.lang.Math.toRadians(position)) * distanceFromSun;
-		double yPosition = java.lang.Math.sin(java.lang.Math.toRadians(position)) * distanceFromSun;
-		return new CartesianCoordinatesDto(xPosition, yPosition);
-	}
+
 
 }

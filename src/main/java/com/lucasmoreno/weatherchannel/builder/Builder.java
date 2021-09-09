@@ -1,4 +1,7 @@
 package com.lucasmoreno.weatherchannel.builder;
+
+import com.lucasmoreno.weatherchannel.dto.CartesianCoordinatesDto;
+
 /**
  * 
  * Builder interface for solar system builder pattern
@@ -13,5 +16,7 @@ public interface Builder {
 	void setPosition(double position);
 
 	void setTranslationSpeed(double translationSpeed);
+
+	void setCartesianCoordinates(CartesianCoordinatesDto cartesianCoordinatesDto);
 
 }

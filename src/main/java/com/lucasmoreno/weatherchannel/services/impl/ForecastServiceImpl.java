@@ -2,6 +2,8 @@ package com.lucasmoreno.weatherchannel.services.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.lucasmoreno.weatherchannel.dto.ForecastType;
@@ -20,6 +22,7 @@ import com.lucasmoreno.weatherchannel.services.SolarSystemService;
  *
  */
 public class ForecastServiceImpl implements ForecastService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ForecastServiceImpl.class);
 
 	@Autowired
 	private SolarSystemForecastRepository solarSystemforecastRepository;
@@ -31,19 +34,15 @@ public class ForecastServiceImpl implements ForecastService {
 
 	@Override
 	public void generateForecast(long dayOfTheYear, SolarSystemDto solarSystemDto) {
-		for (int i = 0; i <= dayOfTheYear; i++) {
-			SolarSystemForecastEntity solarSystemForecastEntity = this.getTodayForecast(solarSystemDto);
-			this.saveForecast(solarSystemForecastEntity);
-			solarSystemForecastList.add(solarSystemForecastEntity);
-		}
-		this.generateForecastReport();
+		SolarSystemForecastEntity solarSystemForecastEntity = this.getTodayForecast(solarSystemDto);
+		this.saveForecast(solarSystemForecastEntity);
+		solarSystemForecastList.add(solarSystemForecastEntity);
 	}
 
 	private void saveForecast(SolarSystemForecastEntity newSolarSystemForecastEntity) {
 		this.solarSystemforecastRepository.save(newSolarSystemForecastEntity);
 	}
 
-	@Override
 	public SolarSystemForecastEntity getTodayForecast(SolarSystemDto solarSystemDto) {
 		SolarSystemForecastEntity solarSystemForecastEntity = new SolarSystemForecastEntity();
 		solarSystemForecastEntity.setDay(solarSystemService.getDay());
@@ -60,19 +59,28 @@ public class ForecastServiceImpl implements ForecastService {
 		return solarSystemForecastEntity;
 	}
 
+	
 	@Override
-	public SolarSystemForecastEntity calculateForecast(long day, SolarSystemDto solarSystemDto) {
-		SolarSystemForecastEntity solarSystemForecastEntity = new SolarSystemForecastEntity();
+	public void generateForecastReport(long years) {
+		LOGGER.info("Creating forecast report");
+		LOGGER.info("Number of dorughts in the next " + years + " years "
+				+ String.valueOf(this.getForecastDays(ForecastType.DROUGHT)));
+		LOGGER.info("Number of rainy days in the next " + years + " years "
+				+ String.valueOf(this.getForecastDays(ForecastType.RAIN)));
+		LOGGER.info("Longest period of rain in the next " + years + " years "
+				+ String.valueOf(this.getLongestRainyPeriod()));
+		LOGGER.info("Number of optimal condition days in the next " + years + " years "
+				+ String.valueOf(this.getForecastDays(ForecastType.OPTIMAL)));
 
-		solarSystemForecastEntity.setDay(day);
-
-		return solarSystemForecastEntity;
 	}
 
-	@Override
-	public void generateForecastReport() {
-		// TODO Auto-generated method stub
+	private long getForecastDays(ForecastType forecastType) {
+		return solarSystemForecastList.stream().filter(c -> c.getForecast().equals(forecastType)).count();
+	}
 
+	private long getLongestRainyPeriod() {
+	
+		return 0;
 	}
 
 }

@@ -21,6 +21,9 @@ public class SolarSystemForecastEntity {
 	@Enumerated(EnumType.STRING)
 	private ForecastType forecast;
 
+	@Column(name = "triangleArea")
+	private long triangleArea;
+	
 	public long getDay() {
 		return day;
 	}
@@ -35,6 +38,14 @@ public class SolarSystemForecastEntity {
 
 	public void setForecast(ForecastType forecast) {
 		this.forecast = forecast;
+	}
+
+	public long getTriangleArea() {
+		return triangleArea;
+	}
+
+	public void setTriangleArea(long triangleArea) {
+		this.triangleArea = triangleArea;
 	}
 	
 }

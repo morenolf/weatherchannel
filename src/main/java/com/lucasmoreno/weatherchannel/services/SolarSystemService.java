@@ -11,6 +11,6 @@ public interface SolarSystemService {
 
 	public long getDay();
 
-	void translateOneDay();
+	public void translateOneDay();
 
 }

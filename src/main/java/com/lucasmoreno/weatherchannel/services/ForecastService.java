@@ -11,11 +11,9 @@ import com.lucasmoreno.weatherchannel.entity.SolarSystemForecastEntity;
  *
  */
 public interface ForecastService {
-	public void generateForecast(long dayByPeriod, SolarSystemDto solarSystemDto);
+
+	public void generateForecastReport(long years);
 	
-	public void generateForecastReport();
+	public void generateForecast(long dayOfTheYear, SolarSystemDto solarSystemDto);
 
-	public SolarSystemForecastEntity calculateForecast(long day, SolarSystemDto solarSystemDto);
-
-	public SolarSystemForecastEntity getTodayForecast(SolarSystemDto solarSystemDto);
 }

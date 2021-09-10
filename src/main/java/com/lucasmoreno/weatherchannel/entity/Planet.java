@@ -1,48 +1,52 @@
-package com.lucasmoreno.weatherchannel.builder.impl;
+package com.lucasmoreno.weatherchannel.entity;
 
 import java.awt.geom.Point2D;
 
-import com.lucasmoreno.weatherchannel.builder.Builder;
-import com.lucasmoreno.weatherchannel.dto.PlanetDto;
+import lombok.Builder;
 
-public class PlanetBuilder implements Builder {
+/**
+ * Data structure to represent a planet on a solar system.
+ * 
+ * @author Lucas Moreno
+ *
+ */
+@Builder
+public class Planet {
 
 	private double distanceFromSun;
 	private double position;
 	private double translationSpeed;
 	private Point2D cartesianCoordinates;
-	
-	@Override
+
+	public double getDistanceFromSun() {
+		return distanceFromSun;
+	}
+
 	public void setDistanceFromSun(double distanceFromSun) {
 		this.distanceFromSun = distanceFromSun;
-
 	}
 
-	@Override
+	public double getPosition() {
+		return position;
+	}
+
 	public void setPosition(double position) {
 		this.position = position;
-
 	}
 
-	@Override
+	public double getTranslationSpeed() {
+		return translationSpeed;
+	}
+
 	public void setTranslationSpeed(double translationSpeed) {
 		this.translationSpeed = translationSpeed;
-
-	}
-
-	public PlanetDto getResult() {
-		return new PlanetDto(this.distanceFromSun, this.position, this.translationSpeed);
-	}
-
-	@Override
-	public void setCartesianCoordinates(Point2D cartesianCoordinates) {
-		this.cartesianCoordinates = cartesianCoordinates;		
 	}
 
 	public Point2D getCartesianCoordinates() {
 		return cartesianCoordinates;
 	}
 
-
-
+	public void setCartesianCoordinates(Point2D cartesianCoordinates) {
+		this.cartesianCoordinates = cartesianCoordinates;
+	}
 }

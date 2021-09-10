@@ -1,4 +1,4 @@
-package com.lucasmoreno.weatherchannel.dto;
+package com.lucasmoreno.weatherchannel.entity;
 
 public enum ForecastType {
 

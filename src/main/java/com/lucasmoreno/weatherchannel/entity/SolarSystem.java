@@ -1,9 +1,7 @@
-package com.lucasmoreno.weatherchannel.dto;
+package com.lucasmoreno.weatherchannel.entity;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -16,16 +14,16 @@ import java.util.NoSuchElementException;
  *
  */
 
-public class SolarSystemDto {
+public class SolarSystem {
 
-	private List<PlanetDto> planets;
+	private List<Planet> planets;
 	private Point2D sunPosition;
 	private long day;
 	private boolean solarSystemAlignment;
 	private boolean planetsAlignment;
 	private boolean gemotricalAlignment;
 
-	public SolarSystemDto(List<PlanetDto> planets) {
+	public SolarSystem(List<Planet> planets) {
 		this.planets = planets;
 		this.sunPosition = new Point2D.Double(0.0, 0.0);
 		this.setAstronomicalEvents();
@@ -56,16 +54,16 @@ public class SolarSystemDto {
 	}
 
 	private boolean onlyPlanetsAlign() {
-		PlanetDto farestPlanetFromSun = this.planets.stream().max(Comparator.comparing(PlanetDto::getDistanceFromSun))
+		Planet farestPlanetFromSun = this.planets.stream().max(Comparator.comparing(Planet::getDistanceFromSun))
 				.orElseThrow(NoSuchElementException::new);
 
-		PlanetDto closestPlanetFromSun = this.planets.stream().min(Comparator.comparing(PlanetDto::getDistanceFromSun))
+		Planet closestPlanetFromSun = this.planets.stream().min(Comparator.comparing(Planet::getDistanceFromSun))
 				.orElseThrow(NoSuchElementException::new);
 
 		Line2D line = new Line2D.Double(closestPlanetFromSun.getCartesianCoordinates(),
 				farestPlanetFromSun.getCartesianCoordinates());
 
-		for (PlanetDto planet : planets) {
+		for (Planet planet : planets) {
 			if (!line.contains(planet.getCartesianCoordinates())) {
 				return false;
 			}
@@ -75,12 +73,12 @@ public class SolarSystemDto {
 	}
 
 	private boolean allPlanetsAlignWithSun() {
-		PlanetDto farestPlanetFromSun = this.planets.stream().max(Comparator.comparing(PlanetDto::getDistanceFromSun))
+		Planet farestPlanetFromSun = this.planets.stream().max(Comparator.comparing(Planet::getDistanceFromSun))
 				.orElseThrow(NoSuchElementException::new);
 
 		Line2D line = new Line2D.Double(this.sunPosition, farestPlanetFromSun.getCartesianCoordinates());
 
-		for (PlanetDto planet : planets) {
+		for (Planet planet : planets) {
 			if (!line.contains(planet.getCartesianCoordinates())) {
 				return false;
 			}
@@ -113,7 +111,7 @@ public class SolarSystemDto {
 		this.gemotricalAlignment = gemotricalAlingment;
 	}
 
-	public List<PlanetDto> getPlanets() {
+	public List<Planet> getPlanets() {
 		return planets;
 	}
 
@@ -125,7 +123,7 @@ public class SolarSystemDto {
 		this.sunPosition = sunPosition;
 	}
 
-	public void setPlanets(List<PlanetDto> planets) {
+	public void setPlanets(List<Planet> planets) {
 		this.planets = planets;
 	}
 

@@ -9,10 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lucasmoreno.weatherchannel.builder.impl.PlanetBuilder;
-import com.lucasmoreno.weatherchannel.director.SolarSystemDirector;
-import com.lucasmoreno.weatherchannel.dto.PlanetDto;
-import com.lucasmoreno.weatherchannel.dto.SolarSystemDto;
+import com.lucasmoreno.weatherchannel.entity.Planet;
+import com.lucasmoreno.weatherchannel.entity.SolarSystem;
 import com.lucasmoreno.weatherchannel.services.ForecastService;
 import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 
@@ -29,10 +27,7 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 
 	private static final long DAYS_PER_YEAR = 360;
 
-	private SolarSystemDto solarSystemDto;
-
-	@Autowired
-	private SolarSystemDirector solarSystemDirector;
+	private SolarSystem solarSystem;
 
 	@Autowired
 	private ForecastService forecastService;
@@ -43,16 +38,34 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 	 */
 	public SolarSystemServiceImpl() {
 		LOGGER.info("Creating solar system");
-		List<PlanetDto> planets = new ArrayList<>();
+		this.solarSystem = new SolarSystem(this.createPlanets());
+	}
 
-		PlanetBuilder planetBuilder = new PlanetBuilder();
-		solarSystemDirector.constructBetasoides(planetBuilder);
-		planets.add(planetBuilder.getResult());
-		solarSystemDirector.constructVulcan(planetBuilder);
-		planets.add(planetBuilder.getResult());
-		solarSystemDirector.constructBetasoides(planetBuilder);
-		planets.add(planetBuilder.getResult());
-		this.solarSystemDto = new SolarSystemDto(planets);
+	private List<Planet> createPlanets() {
+		List<Planet> planets = new ArrayList<>();
+
+		double distanceFromSun = 500.0;
+		double position = 0.0;
+
+		Planet planet = Planet.builder().distanceFromSun(distanceFromSun).position(position).translationSpeed(1)
+				.cartesianCoordinates(new Point2D.Double(position, distanceFromSun)).build();
+
+		planets.add(planet);
+
+		distanceFromSun = 2000.0;
+		position = 0.0;
+		planet = Planet.builder().distanceFromSun(distanceFromSun).position(position).translationSpeed(3)
+				.cartesianCoordinates(new Point2D.Double(position, distanceFromSun)).build();
+
+		planets.add(planet);
+
+		distanceFromSun = 1000.0;
+		position = 0.0;
+		planet = Planet.builder().distanceFromSun(distanceFromSun).position(position).translationSpeed(-5)
+				.cartesianCoordinates(new Point2D.Double(position, distanceFromSun)).build();
+		planets.add(planet);
+
+		return planets;
 	}
 
 	/**
@@ -62,31 +75,28 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 
 		long dayByPeriod = years * DAYS_PER_YEAR;
 
-		for (int i = 0; i < dayByPeriod; i++) {
+		for (int day = 0; day < dayByPeriod; day++) {
 
-			this.forecastService.generateForecast(dayByPeriod, this.solarSystemDto);
+			this.forecastService.generateForecast(this.solarSystem);
 			this.translateOneDay();
+			this.solarSystem.setDay(day);
 
 		}
-		
+
 		this.forecastService.generateForecastReport(years);
 
 	}
 
 	@Override
-	public long getDay() {
-		return this.solarSystemDto.getDay();
+	public void translateOneDay() {
+		for (Planet planet : solarSystem.getPlanets()) {
+			planet.setPosition(planet.getPosition() + planet.getTranslationSpeed());
+			planet.setCartesianCoordinates(
+					this.calculateCartesianCoodrinates(planet.getPosition(), planet.getDistanceFromSun()));
+		}
+		solarSystem.setAstronomicalEvents();
 	}
 
-	@Override
-	public void translateOneDay() {
-		for (PlanetDto planet : solarSystemDto.getPlanets()) {
-			planet.setPosition(planet.getPosition() + planet.getTranslationSpeed());
-			planet.setCartesianCoordinates(this.calculateCartesianCoodrinates(planet.getPosition(), planet.getDistanceFromSun()));
-		}
-		solarSystemDto.setAstronomicalEvents();
-	}
-	
 	public Point2D calculateCartesianCoodrinates(double position, double distanceFromSun) {
 		double xPosition = java.lang.Math.cos(java.lang.Math.toRadians(position)) * distanceFromSun;
 		double yPosition = java.lang.Math.sin(java.lang.Math.toRadians(position)) * distanceFromSun;

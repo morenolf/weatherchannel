@@ -1,17 +1,20 @@
 package com.lucasmoreno.weatherchannel.services.impl;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.lucasmoreno.weatherchannel.dto.ForecastType;
-import com.lucasmoreno.weatherchannel.dto.SolarSystemDto;
+import com.lucasmoreno.weatherchannel.entity.ForecastType;
+import com.lucasmoreno.weatherchannel.entity.Planet;
+import com.lucasmoreno.weatherchannel.entity.SolarSystem;
 import com.lucasmoreno.weatherchannel.entity.SolarSystemForecastEntity;
 import com.lucasmoreno.weatherchannel.repository.SolarSystemForecastRepository;
 import com.lucasmoreno.weatherchannel.services.ForecastService;
-import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 
 /**
  * 
@@ -28,13 +31,11 @@ public class ForecastServiceImpl implements ForecastService {
 	private SolarSystemForecastRepository solarSystemforecastRepository;
 
 	@Autowired
-	private SolarSystemService solarSystemService;
-
 	private List<SolarSystemForecastEntity> solarSystemForecastList;
 
 	@Override
-	public void generateForecast(long dayOfTheYear, SolarSystemDto solarSystemDto) {
-		SolarSystemForecastEntity solarSystemForecastEntity = this.getTodayForecast(solarSystemDto);
+	public void generateForecast(SolarSystem solarSystem) {
+		SolarSystemForecastEntity solarSystemForecastEntity = this.getTodayForecast(solarSystem);
 		this.saveForecast(solarSystemForecastEntity);
 		solarSystemForecastList.add(solarSystemForecastEntity);
 	}
@@ -43,9 +44,9 @@ public class ForecastServiceImpl implements ForecastService {
 		this.solarSystemforecastRepository.save(newSolarSystemForecastEntity);
 	}
 
-	public SolarSystemForecastEntity getTodayForecast(SolarSystemDto solarSystemDto) {
+	public SolarSystemForecastEntity getTodayForecast(SolarSystem solarSystemDto) {
 		SolarSystemForecastEntity solarSystemForecastEntity = new SolarSystemForecastEntity();
-		solarSystemForecastEntity.setDay(solarSystemService.getDay());
+		solarSystemForecastEntity.setDay(solarSystemDto.getDay());
 		if (solarSystemDto.isSolarSystemAlignment()) {
 			solarSystemForecastEntity.setForecast(ForecastType.DROUGHT);
 		} else if (solarSystemDto.isPlanetsAlignment()) {
@@ -58,7 +59,16 @@ public class ForecastServiceImpl implements ForecastService {
 
 		return solarSystemForecastEntity;
 	}
+	
+/*
+	private SolarSystemForecastEntity calculateForecast(long day, SolarSystemDto solarSystemDto) {
+		SolarSystemForecastEntity solarSystemForecastEntity = new SolarSystemForecastEntity();
 
+		solarSystemForecastEntity.setDay(day);
+
+		return solarSystemForecastEntity;
+	}
+*/
 	
 	@Override
 	public void generateForecastReport(long years) {
@@ -79,8 +89,36 @@ public class ForecastServiceImpl implements ForecastService {
 	}
 
 	private long getLongestRainyPeriod() {
-	
-		return 0;
+		int count = 0;
+		int max = 0;
+		ForecastType lastForecast = ForecastType.NORMAL;
+		List<Integer> counts = new ArrayList<>();
+		
+		for (SolarSystemForecastEntity solarSystemForecastEntity : this.solarSystemForecastList) {
+			
+			if (solarSystemForecastEntity.getForecast().equals(ForecastType.RAIN)) {
+				if(lastForecast.equals(ForecastType.RAIN)) {
+					count += 1;
+				}else {
+					counts.add(count);
+					count = 1;					
+				}
+			}else {
+				count = 0;
+			}
+			
+			lastForecast = solarSystemForecastEntity.getForecast();
+		}
+		
+		if(count != 0) {
+			counts.add(count);
+		}
+		
+		
+		return counts.stream()
+				.mapToInt(v -> v)
+				.max()
+				.orElseThrow(NoSuchElementException::new);
 	}
 
 }

@@ -7,8 +7,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.lucasmoreno.weatherchannel.dto.ForecastType;
-
 @Entity
 @Table(name = "forecast")
 public class SolarSystemForecastEntity {

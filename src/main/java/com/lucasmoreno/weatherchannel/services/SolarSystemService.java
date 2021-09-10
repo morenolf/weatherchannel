@@ -9,8 +9,8 @@ package com.lucasmoreno.weatherchannel.services;
  */
 public interface SolarSystemService {
 
-	public long getDay();
-
 	public void translateOneDay();
+
+	public void generateForecastByYears(long years);
 
 }

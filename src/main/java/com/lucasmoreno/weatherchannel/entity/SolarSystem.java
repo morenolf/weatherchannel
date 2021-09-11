@@ -1,14 +1,13 @@
 package com.lucasmoreno.weatherchannel.entity;
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.Comparator;
 import java.util.List;
-import java.util.NoSuchElementException;
+
+import com.lucasmoreno.weatherchannel.utils.MathUtils;
 
 /**
  * 
- * Representation of the solar system with it's planets and sun.
+ * Representation of the solar system with his planets and sun.
  * 
  * @author Lucas Moreno
  *
@@ -22,69 +21,101 @@ public class SolarSystem {
 	private boolean solarSystemAlignment;
 	private boolean planetsAlignment;
 	private boolean gemotricalAlignment;
+	private double areaSize;
 
+	/**
+	 * Construct solar system base on existing planets.
+	 * 
+	 * @param planets
+	 */
 	public SolarSystem(List<Planet> planets) {
 		this.planets = planets;
 		this.sunPosition = new Point2D.Double(0.0, 0.0);
 		this.setAstronomicalEvents();
 	}
 
+	/**
+	 * After creating solar system, this defines the different astronomical events
+	 * at the moment.
+	 * 
+	 */
 	public void setAstronomicalEvents() {
 
-		this.setSolarSystemAlignment(this.allPlanetsAlignWithSun());
-		this.setPlanetsAlignment(this.onlyPlanetsAlign());
-		this.setGemotricalAlignment(this.gemoetricalAlignmentWithSunInside());
-
+		Point2D pointA = this.getPlanets().get(0).getCartesianCoordinates();
+		Point2D pointB = this.getPlanets().get(1).getCartesianCoordinates();
+		Point2D pointC = this.getPlanets().get(2).getCartesianCoordinates();
+		this.setSolarSystemAlignment(this.allPlanetsAlignWithSun(pointA, pointB, pointC));
+		this.setPlanetsAlignment(this.allPlanetsAlign(pointA, pointB, pointC));
+		this.setAreaSize(this.calculateAreaSize(pointA, pointB, pointC));
 	}
 
-	private boolean gemoetricalAlignmentWithSunInside() {
+	/**
+	 * Based on 3 points P(x,y) and the sun, calculates if all of them are align.
+	 * 
+	 * @param pointA
+	 * @param pointB
+	 * @param pointC
+	 * @return If the 3 points P(x,y) and the sun are align or not.
+	 */
 
-		// TODO
-		/*
-		this.planets.get(0);
-		double w1 = (e.x * (a.y - p.y) + e.y * (p.x - a.x)) / (d.x * e.y - d.y * e.x);
-		double w2 = (p.y - a.y - w1 * d.y) / e.y;
-		*/
-		return false;
+	private boolean allPlanetsAlignWithSun(Point2D pointA, Point2D pointB, Point2D pointC) {
+
+		return this.allPlanetsAlign(pointA, pointB, pointC)
+				&& MathUtils.areCollinear(pointB, pointC, this.sunPosition);
 	}
+
+	/**
+	 * Based on 3 points P(x,y), calculates if all of them are align.
+	 * 
+	 * @param pointA
+	 * @param pointB
+	 * @param pointC
+	 * @return If the 3 points P(x,y) are align or not.
+	 */
+	private boolean allPlanetsAlign(Point2D pointA, Point2D pointB, Point2D pointC) {
+
+		return MathUtils.areCollinear(pointA, pointB, pointC);
+	}
+
+	/**
+	 * Based on 3 points P(x,y) calculates if they formed a triangle and then return
+	 * the area of the triangle.
+	 * 
+	 * @param pointA
+	 * @param pointB
+	 * @param pointC
+	 * @return area of a triangle. If no triangle exist, return 0.0.
+	 */
+
+	private double calculateAreaSize(Point2D pointA, Point2D pointB, Point2D pointC) {
+
+		if (!MathUtils.areCollinear(pointA, pointB, pointC)) {
+			return MathUtils.calculateTriangleArea(pointA, pointB, pointC);
+		}
+		return 0.0;
+	}
+
 	
-	private double calculateTriangleArea(Point2D pointA, Point2D pointB, Point2D pointC) {
-		return Math.abs((pointA.getX()*(pointB.getY()-pointC.getY()) + pointB.getX()*(pointC.getY()-pointA.getY())+
-				pointC.getX()*(pointA.getY()-pointB.getY()))/2.0);
-	}
+	/**
+	 * Base on 3 points P(x,y), returns if a 4rd point it's inside that triangle.
+	 * 
+	 * @param pointA
+	 * @param pointB
+	 * @param pointC
+	 * @return If a determine point it's inside a triangle. If there is no triangle, return false.
+	 */
+	public boolean isGemoetricalAlignmentWithSunInside(Point2D pointA, Point2D pointB, Point2D pointC) {
 
-	private boolean onlyPlanetsAlign() {
-		Planet farestPlanetFromSun = this.planets.stream().max(Comparator.comparing(Planet::getDistanceFromSun))
-				.orElseThrow(NoSuchElementException::new);
+		if (this.areaSize != 0.0) {
+			double areaABC = MathUtils.calculateTriangleArea(pointA, pointB, pointC);
+			double areaPBC = MathUtils.calculateTriangleArea(this.sunPosition, pointB, pointC);
+			double areaPAC = MathUtils.calculateTriangleArea(this.sunPosition, pointA, pointC);
+			double areaPAB = MathUtils.calculateTriangleArea(this.sunPosition, pointA, pointB);
 
-		Planet closestPlanetFromSun = this.planets.stream().min(Comparator.comparing(Planet::getDistanceFromSun))
-				.orElseThrow(NoSuchElementException::new);
-
-		Line2D line = new Line2D.Double(closestPlanetFromSun.getCartesianCoordinates(),
-				farestPlanetFromSun.getCartesianCoordinates());
-
-		for (Planet planet : planets) {
-			if (!line.contains(planet.getCartesianCoordinates())) {
-				return false;
-			}
+			return areaABC == areaPBC + areaPAC + areaPAB;
 		}
 
-		return true;
-	}
-
-	private boolean allPlanetsAlignWithSun() {
-		Planet farestPlanetFromSun = this.planets.stream().max(Comparator.comparing(Planet::getDistanceFromSun))
-				.orElseThrow(NoSuchElementException::new);
-
-		Line2D line = new Line2D.Double(this.sunPosition, farestPlanetFromSun.getCartesianCoordinates());
-
-		for (Planet planet : planets) {
-			if (!line.contains(planet.getCartesianCoordinates())) {
-				return false;
-			}
-		}
-
-		return true;
+		return false;
 	}
 
 	public boolean isSolarSystemAlignment() {
@@ -133,5 +164,13 @@ public class SolarSystem {
 
 	public void setDay(long day) {
 		this.day = day;
+	}
+
+	public double getAreaSize() {
+		return areaSize;
+	}
+
+	public void setAreaSize(double areaSize) {
+		this.areaSize = areaSize;
 	}
 }

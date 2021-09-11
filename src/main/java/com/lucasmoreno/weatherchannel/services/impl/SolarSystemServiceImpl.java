@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lucasmoreno.weatherchannel.entity.DefaultPlanetDistancesTypes;
+import com.lucasmoreno.weatherchannel.entity.DefaultPlanetPositionType;
 import com.lucasmoreno.weatherchannel.entity.Planet;
 import com.lucasmoreno.weatherchannel.entity.SolarSystem;
 import com.lucasmoreno.weatherchannel.services.ForecastService;
@@ -16,7 +18,7 @@ import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 
 /**
  * Service that handles Solar system logic and his construction as well in order
- * to calculate forecast.
+ * to calculate solar system conditions.
  * 
  * @author Lucas Moreno
  *
@@ -41,36 +43,47 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 		this.solarSystem = new SolarSystem(this.createPlanets());
 	}
 
+	/**
+	 * Creates planets base on existing configuration.
+	 * 
+	 * @return List of Planets
+	 */
+
 	private List<Planet> createPlanets() {
 		List<Planet> planets = new ArrayList<>();
 
-		double distanceFromSun = 500.0;
-		double position = 0.0;
-
-		Planet planet = Planet.builder().distanceFromSun(distanceFromSun).position(position).translationSpeed(1)
-				.cartesianCoordinates(new Point2D.Double(position, distanceFromSun)).build();
-
-		planets.add(planet);
-
-		distanceFromSun = 2000.0;
-		position = 0.0;
-		planet = Planet.builder().distanceFromSun(distanceFromSun).position(position).translationSpeed(3)
-				.cartesianCoordinates(new Point2D.Double(position, distanceFromSun)).build();
+		Planet planet = Planet.builder().distanceFromSun(DefaultPlanetDistancesTypes.VULCANO.getPlanetDistance())
+				.position(DefaultPlanetPositionType.DEFAULT.getDefaultPlanetPosition()).translationSpeed(1)
+				.cartesianCoordinates(
+						this.calculateCartesianCoodrinates(DefaultPlanetPositionType.DEFAULT.getDefaultPlanetPosition(),
+								DefaultPlanetDistancesTypes.VULCANO.getPlanetDistance()))
+				.build();
 
 		planets.add(planet);
 
-		distanceFromSun = 1000.0;
-		position = 0.0;
-		planet = Planet.builder().distanceFromSun(distanceFromSun).position(position).translationSpeed(-5)
-				.cartesianCoordinates(new Point2D.Double(position, distanceFromSun)).build();
+		planet = Planet.builder().distanceFromSun(DefaultPlanetDistancesTypes.BETASOIDES.getPlanetDistance())
+				.position(DefaultPlanetPositionType.DEFAULT.getDefaultPlanetPosition()).translationSpeed(3)
+				.cartesianCoordinates(
+						this.calculateCartesianCoodrinates(DefaultPlanetPositionType.DEFAULT.getDefaultPlanetPosition(),
+								DefaultPlanetDistancesTypes.BETASOIDES.getPlanetDistance()))
+				.build();
+
 		planets.add(planet);
 
+		planet = Planet.builder().distanceFromSun(DefaultPlanetDistancesTypes.FERENGIS.getPlanetDistance())
+				.position(DefaultPlanetPositionType.DEFAULT.getDefaultPlanetPosition()).translationSpeed(-5)
+				.cartesianCoordinates(
+						this.calculateCartesianCoodrinates(DefaultPlanetPositionType.DEFAULT.getDefaultPlanetPosition(),
+								DefaultPlanetDistancesTypes.FERENGIS.getPlanetDistance()))
+				.build();
+		planets.add(planet);
 		return planets;
 	}
 
 	/**
 	 * Generates the forecast conditions for {@value} years in the future.
 	 */
+	@Override
 	public void generateForecastByYears(long years) {
 
 		long dayByPeriod = years * DAYS_PER_YEAR;
@@ -87,17 +100,44 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 
 	}
 
-	@Override
-	public void translateOneDay() {
+	/**
+	 * Moves the planets one day using their speeds.
+	 * 
+	 */
+	private void translateOneDay() {
 		for (Planet planet : solarSystem.getPlanets()) {
-			planet.setPosition(planet.getPosition() + planet.getTranslationSpeed());
+			planet.setPosition(this.set360Position(planet));
 			planet.setCartesianCoordinates(
 					this.calculateCartesianCoodrinates(planet.getPosition(), planet.getDistanceFromSun()));
 		}
 		solarSystem.setAstronomicalEvents();
 	}
 
-	public Point2D calculateCartesianCoodrinates(double position, double distanceFromSun) {
+	/**
+	 * Sets the position base on 360 limit to avoid breaking 360 degrees.
+	 * 
+	 * @param Planet to be translate
+	 * @return new position for that Planet
+	 */
+	private double set360Position(Planet planet) {
+		double position = planet.getPosition() + planet.getTranslationSpeed();
+		if (position > 360.0) {
+			position -= 360;
+		} else if (position < -360.0) {
+			position += 360;
+		}
+		return position;
+	}
+
+	/**
+	 * Planets are configured with polar coordinates and we need Cartesian
+	 * coordinates to perform different calculations.
+	 * 
+	 * @param position.       Position on degrees.
+	 * @param distanceFromSun Radius from coordinates P(0,0)
+	 * @return CartesianCoordinates based on polar position.
+	 */
+	private Point2D calculateCartesianCoodrinates(double position, double distanceFromSun) {
 		double xPosition = java.lang.Math.cos(java.lang.Math.toRadians(position)) * distanceFromSun;
 		double yPosition = java.lang.Math.sin(java.lang.Math.toRadians(position)) * distanceFromSun;
 		return new Point2D.Double(xPosition, yPosition);

@@ -12,21 +12,21 @@ import javax.persistence.Table;
 public class SolarSystemForecastEntity {
 
 	@Id
-	@Column(name = "day")
-	private long day;
+	@Column(name = "DAY")
+	private Long day;
 	
-	@Column(name = "forecast")
+	@Column(name = "FORECAST")
 	@Enumerated(EnumType.STRING)
 	private ForecastType forecast;
 
-	@Column(name = "triangleArea")
-	private long triangleArea;
+	@Column(name = "TRIANGLEAREA")
+	private double triangleArea;
 	
-	public long getDay() {
+	public Long getDay() {
 		return day;
 	}
 
-	public void setDay(long day) {
+	public void setDay(Long day) {
 		this.day = day;
 	}
 
@@ -38,11 +38,11 @@ public class SolarSystemForecastEntity {
 		this.forecast = forecast;
 	}
 
-	public long getTriangleArea() {
+	public double getTriangleArea() {
 		return triangleArea;
 	}
 
-	public void setTriangleArea(long triangleArea) {
+	public void setTriangleArea(double triangleArea) {
 		this.triangleArea = triangleArea;
 	}
 	

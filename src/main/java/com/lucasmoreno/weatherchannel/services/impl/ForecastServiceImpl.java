@@ -1,11 +1,13 @@
 package com.lucasmoreno.weatherchannel.services.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.OptionalDouble;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -121,35 +123,10 @@ public class ForecastServiceImpl implements ForecastService {
 
 	/**
 	 * Calculates longest period of rain.
-	 * @return
+	 * @return day
 	 */
-	private long getLongestRainyPeriod() {
-
-		ForecastType lastForecast = ForecastType.NORMAL;
-		List<Integer> counts = new ArrayList<>();
-		int count = 0;
-
-		for (SolarSystemForecastEntity solarSystemForecastEntity : this.solarSystemForecastList) {
-
-			if (solarSystemForecastEntity.getForecast().equals(ForecastType.RAIN)) {
-				if (lastForecast.equals(ForecastType.RAIN)) {
-					count += 1;
-				} else {
-					counts.add(count);
-					count = 1;
-				}
-			} else {
-				count = 0;
-			}
-
-			lastForecast = solarSystemForecastEntity.getForecast();
-		}
-
-		if (count != 0) {
-			counts.add(count);
-		}
-
-		return counts.stream().mapToInt(v -> v).max().orElseThrow(NoSuchElementException::new);
+	private  Long getLongestRainyPeriod() {
+		return Collections.max(solarSystemForecastList, Comparator.comparing(SolarSystemForecastEntity::getTriangleArea)).getDay();
 	}
 
 }

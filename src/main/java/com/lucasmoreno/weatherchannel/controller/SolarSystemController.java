@@ -1,7 +1,5 @@
 package com.lucasmoreno.weatherchannel.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,28 +18,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "forecast")
 @Slf4j
 public class SolarSystemController {
-	
-    @Autowired
-    private SolarSystemService solarSystemService;
 
     @Autowired
-    private SolarSystemForecastRepository solarSystemForecastRepository;
+    private SolarSystemService solarSystemService;
     
-    @GetMapping(value = "/testing/{day}")
-    public SolarSystemForecastEntity getTesting(@PathVariable Long day) {
-    	log.error("Getting forecast for day testing: " + day);
-    	SolarSystemForecastEntity testingx = solarSystemForecastRepository.getById(day);
-    	return testingx;
+    @Autowired
+    private SolarSystemForecastRepository solarSystemForecastRepository;
+
+    @GetMapping(value = "/generateForecast/{years}")
+    public void generateForecast(@PathVariable int years) throws SolarSystemException, SolarSystemServiceException {
+    	log.error("Getting forecast for day testing: " + years);
+    	solarSystemService.generateForecastByYears(years);
     }
     
-    @GetMapping(value = "/generateForecast/{years}")
-    public void generateForecast(@PathVariable int years) {
-    	log.error("Getting forecast for day testing: " + years);
-    	try {
-			solarSystemService.generateForecastByYears(years);
-		} catch (SolarSystemException | SolarSystemServiceException e ) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    @GetMapping(value = "/day/{day}")
+    public SolarSystemForecastEntity getForecastByDay(@PathVariable long day) throws SolarSystemException, SolarSystemServiceException {
+    	return solarSystemForecastRepository.getById(day);    	
     }
 }

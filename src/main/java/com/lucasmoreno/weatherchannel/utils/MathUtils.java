@@ -6,6 +6,8 @@ public class MathUtils {
 	private static final double EPS = 0.001;
 	private static final double EPS_SQUARE = EPS * EPS;
 
+	private MathUtils() {}
+	
 	/**
 	 * Given 3 points P(x,y) calculates the area of a possible triangle.
 	 * 

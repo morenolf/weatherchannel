@@ -1,0 +1,5 @@
+runtime: java11
+instance_class: F2
+env_variables:
+  SPRING_PROFILES_ACTIVE: "dev"
+entrypoint: java -noverify -jar WeatherChannel-0.0.1-SNAPSHOT 

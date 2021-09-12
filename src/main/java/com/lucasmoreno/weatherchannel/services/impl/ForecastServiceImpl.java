@@ -15,6 +15,8 @@ import com.lucasmoreno.weatherchannel.entity.SolarSystemForecastEntity;
 import com.lucasmoreno.weatherchannel.repository.SolarSystemForecastRepository;
 import com.lucasmoreno.weatherchannel.services.ForecastService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * Forecast service to handle the logic to calculate solar system weather
@@ -24,8 +26,8 @@ import com.lucasmoreno.weatherchannel.services.ForecastService;
  *
  */
 @Service
-public class ForecastServiceImpl implements ForecastService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ForecastServiceImpl.class);
+@Slf4j
+public class ForecastServiceImpl implements ForecastService {	
 
 	@Autowired
 	private SolarSystemForecastRepository solarSystemforecastRepository;
@@ -39,7 +41,7 @@ public class ForecastServiceImpl implements ForecastService {
 	 */
 	@Override
 	public SolarSystemForecastEntity getForecastByDay(long day) {
-		LOGGER.info("Retrieving forecast by day");
+		log.info("Retrieving forecast by day");
 		return solarSystemforecastRepository.getById(day);
 	}
 
@@ -96,14 +98,14 @@ public class ForecastServiceImpl implements ForecastService {
 	 */
 	@Override
 	public void generateForecastReport(long years) {
-		LOGGER.info("Creating forecast report");
-		LOGGER.info("Number of dorughts in the next " + years + " years "
+		log.info("Creating forecast report");
+		log.info("Number of dorughts in the next " + years + " years "
 				+ String.valueOf(this.getForecastDays(ForecastType.DROUGHT)));
-		LOGGER.info("Number of rainy days in the next " + years + " years "
+		log.info("Number of rainy days in the next " + years + " years "
 				+ String.valueOf(this.getForecastDays(ForecastType.RAIN)));
-		LOGGER.info("Longest period of rain in the next " + years + " years "
+		log.info("Longest period of rain in the next " + years + " years "
 				+ String.valueOf(this.getLongestRainyPeriod()));
-		LOGGER.info("Number of optimal condition days in the next " + years + " years "
+		log.info("Number of optimal condition days in the next " + years + " years "
 				+ String.valueOf(this.getForecastDays(ForecastType.OPTIMAL)));
 
 	}

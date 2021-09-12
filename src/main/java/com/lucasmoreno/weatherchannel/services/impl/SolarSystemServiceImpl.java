@@ -13,6 +13,8 @@ import com.lucasmoreno.weatherchannel.entity.DefaultPlanetDistancesTypes;
 import com.lucasmoreno.weatherchannel.entity.DefaultPlanetPositionType;
 import com.lucasmoreno.weatherchannel.entity.Planet;
 import com.lucasmoreno.weatherchannel.entity.SolarSystem;
+import com.lucasmoreno.weatherchannel.exception.SolarSystemException;
+import com.lucasmoreno.weatherchannel.exception.SolarSystemServiceException;
 import com.lucasmoreno.weatherchannel.services.ForecastService;
 import com.lucasmoreno.weatherchannel.services.SolarSystemService;
 
@@ -37,8 +39,10 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 	/**
 	 * Creates the Solar system based on builder pattern using known planets and
 	 * their properties
+	 * 
+	 * @throws SolarSystemException
 	 */
-	public SolarSystemServiceImpl() {
+	public SolarSystemServiceImpl() throws SolarSystemException {
 		LOGGER.info("Creating solar system");
 		this.solarSystem = new SolarSystem(this.createPlanets());
 	}
@@ -81,17 +85,27 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 	}
 
 	/**
-	 * Generates the forecast conditions for {@value} years in the future.
+	 * @throws Generates the forecast conditions for {@value} years in the future.
+	 * 
+	 * @throws SolarSystemException @throws
 	 */
 	@Override
-	public void generateForecastByYears(long years) {
+	public void generateForecastByYears(long years) throws SolarSystemServiceException {
 
+		if (years <= 0) {
+			String message = "Unnable to calculate forecast for negative or zero days";
+			throw new SolarSystemServiceException(message);
+		}
 		long dayByPeriod = years * DAYS_PER_YEAR;
 
 		for (int day = 0; day < dayByPeriod; day++) {
 
 			this.forecastService.generateForecast(this.solarSystem);
-			this.translateOneDay();
+			try {
+				this.translateOneDay();
+			} catch (Exception e) {
+				throw new SolarSystemServiceException(e.getLocalizedMessage());
+			}
 			this.solarSystem.setDay(day);
 
 		}
@@ -103,8 +117,10 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 	/**
 	 * Moves the planets one day using their speeds.
 	 * 
+	 * @throws SolarSystemException
+	 * 
 	 */
-	private void translateOneDay() {
+	private void translateOneDay() throws SolarSystemException {
 		for (Planet planet : solarSystem.getPlanets()) {
 			planet.setPosition(this.set360Position(planet));
 			planet.setCartesianCoordinates(

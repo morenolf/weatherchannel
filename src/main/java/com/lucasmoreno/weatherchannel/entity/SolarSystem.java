@@ -3,7 +3,14 @@ package com.lucasmoreno.weatherchannel.entity;
 import java.awt.geom.Point2D;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.lucasmoreno.weatherchannel.exception.SolarSystemException;
+import com.lucasmoreno.weatherchannel.services.impl.ForecastServiceImpl;
 import com.lucasmoreno.weatherchannel.utils.MathUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -12,7 +19,7 @@ import com.lucasmoreno.weatherchannel.utils.MathUtils;
  * @author Lucas Moreno
  *
  */
-
+@Slf4j
 public class SolarSystem {
 
 	private List<Planet> planets;
@@ -27,26 +34,59 @@ public class SolarSystem {
 	 * Construct solar system base on existing planets.
 	 * 
 	 * @param planets
+	 * @throws SolarSystemException
 	 */
-	public SolarSystem(List<Planet> planets) {
+	public SolarSystem(List<Planet> planets) throws SolarSystemException {
+		validatePlanets(planets);
 		this.planets = planets;
 		this.sunPosition = new Point2D.Double(0.0, 0.0);
 		this.setAstronomicalEvents();
 	}
 
 	/**
+	 * Validates the planets configuration.
+	 * Solar System doesn't allow: 
+	 * Empty solar system.
+	 * Less or more than 3 planets. 
+	 * 
+	 * @param planets
+	 * @throws SolarSystemException
+	 */
+	private void validatePlanets(List<Planet> planets) throws SolarSystemException {
+		String message = "";
+		if (planets.isEmpty()) {
+			message = "Solar system doesn't allow empty solar system. Planets must be input.";
+		} else if (planets.size() > 2 && planets.size() < 3 ) {
+			message = "Solar system doens't have implemented any other configuration than 3 plants.";
+		} else {
+			for (Planet planet : planets) {
+				if (planet.getDistanceFromSun() < 0.0) {
+					message = "Solar system doesn't allow negative planet distance from sun.";
+				}
+			}
+		}
+		if (!message.isEmpty()) {
+			log.error(message);
+			throw new SolarSystemException(message);
+		}
+	}
+
+	/**
 	 * After creating solar system, this defines the different astronomical events
 	 * at the moment.
 	 * 
+	 * @throws SolarSystemException
+	 * 
 	 */
-	public void setAstronomicalEvents() {
-
+	public void setAstronomicalEvents() throws SolarSystemException{
+		this.validatePlanets(this.planets);
 		Point2D pointA = this.getPlanets().get(0).getCartesianCoordinates();
 		Point2D pointB = this.getPlanets().get(1).getCartesianCoordinates();
 		Point2D pointC = this.getPlanets().get(2).getCartesianCoordinates();
 		this.setSolarSystemAlignment(this.allPlanetsAlignWithSun(pointA, pointB, pointC));
 		this.setPlanetsAlignment(this.allPlanetsAlign(pointA, pointB, pointC));
 		this.setAreaSize(this.calculateAreaSize(pointA, pointB, pointC));
+		this.setGemotricalAlignment(this.isGemoetricalAlignmentWithSunInside(pointA, pointB, pointC));
 	}
 
 	/**
@@ -60,8 +100,7 @@ public class SolarSystem {
 
 	private boolean allPlanetsAlignWithSun(Point2D pointA, Point2D pointB, Point2D pointC) {
 
-		return this.allPlanetsAlign(pointA, pointB, pointC)
-				&& MathUtils.areCollinear(pointB, pointC, this.sunPosition);
+		return MathUtils.areCollinear(pointA, pointB, pointC) && MathUtils.areCollinear(pointB, pointC, this.sunPosition);
 	}
 
 	/**
@@ -74,7 +113,7 @@ public class SolarSystem {
 	 */
 	private boolean allPlanetsAlign(Point2D pointA, Point2D pointB, Point2D pointC) {
 
-		return MathUtils.areCollinear(pointA, pointB, pointC);
+		return MathUtils.areCollinear(pointA, pointB, pointC) && !MathUtils.areCollinear(pointB, pointC, this.sunPosition);
 	}
 
 	/**
@@ -95,27 +134,19 @@ public class SolarSystem {
 		return 0.0;
 	}
 
-	
 	/**
 	 * Base on 3 points P(x,y), returns if a 4rd point it's inside that triangle.
 	 * 
 	 * @param pointA
 	 * @param pointB
 	 * @param pointC
-	 * @return If a determine point it's inside a triangle. If there is no triangle, return false.
+	 * @return If a determine point it's inside a triangle. If there is no triangle,
+	 *         return false.
 	 */
-	public boolean isGemoetricalAlignmentWithSunInside(Point2D pointA, Point2D pointB, Point2D pointC) {
+	private boolean isGemoetricalAlignmentWithSunInside(Point2D pointA, Point2D pointB, Point2D pointC) {
 
-		if (this.areaSize != 0.0) {
-			double areaABC = MathUtils.calculateTriangleArea(pointA, pointB, pointC);
-			double areaPBC = MathUtils.calculateTriangleArea(this.sunPosition, pointB, pointC);
-			double areaPAC = MathUtils.calculateTriangleArea(this.sunPosition, pointA, pointC);
-			double areaPAB = MathUtils.calculateTriangleArea(this.sunPosition, pointA, pointB);
+		return MathUtils.accuratePointInTriangle(this.sunPosition, pointA, pointB, pointC);
 
-			return areaABC == areaPBC + areaPAC + areaPAB;
-		}
-
-		return false;
 	}
 
 	public boolean isSolarSystemAlignment() {

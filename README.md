@@ -2,6 +2,7 @@
 Api service for weather channel application
 
 Weather Channel is a small application that simulates the Solar System for 3 planets generating a forecast considering astronomical events based on planet distribution every day.
+
 Astronomical events:
 - Drought: Sun and planets are align (fig. 1).
 - Rain: Planets form a triangle and the sun is inside the planet (fig. 2).

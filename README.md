@@ -36,3 +36,5 @@ Pending tasks:
 - Finish Junit cases.
 - Generate report base on scheduler or cron annotations.
 - Fix issue with JPA, MySql data type and request by day.
+- Fix possible issue with area calculation when the sun should be inside the triangle formed by the planets.
+- Create run steps on README.

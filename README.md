@@ -34,7 +34,7 @@ Web API:
 Pending tasks:
 - Swagger for documentation.
 - Finish Junit cases.
-- Generate report base on scheduler or cron annotations.
+- Generate report base on scheduler or cron annotations. Nowadays will be generated manually by GET /forecast/generateForecast/{years}.
 - Fix issue with JPA, MySql data type and request by day.
 - Fix possible issue with area calculation when the sun should be inside the triangle formed by the planets.
 - Create run steps on README.

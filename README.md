@@ -24,6 +24,9 @@ Technologies:
 - Google cloud dependencies for host application on Google cloud engine.
 - Junit and Mockito core for test cases.
 
+Google Cloud engine api endpoint:
+http://weatherchannel.rj.r.appspot.com/
+
 Web API:
 - GET /forecast/day/{day} Retrieves forecast for an specific day.
 - GET /forecast/generateForecast/{years} Generates forecast for a given amount of years and persist the information on the database.

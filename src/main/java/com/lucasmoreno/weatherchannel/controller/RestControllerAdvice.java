@@ -1,4 +1,4 @@
-package com.lucasmoreno.weatherchannel;
+package com.lucasmoreno.weatherchannel.controller;
 
 import java.util.NoSuchElementException;
 

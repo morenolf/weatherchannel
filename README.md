@@ -7,11 +7,12 @@ Astronomical events:
 - Rain: Planets form a triangle and the sun is inside the planet (fig. 2).
 - Optimal conditions: Planets are align without the sun (fig. 3).
 - Normal: Any other planet distribution.
-- 
-![image](https://user-images.githubusercontent.com/58280145/133074974-6729d271-349f-47fe-90f5-e6936b2bde42.png)
-![image](https://user-images.githubusercontent.com/58280145/133075037-112928ff-eeeb-4c73-8983-5f7296f7dc5d.png)
-![image](https://user-images.githubusercontent.com/58280145/133075058-d817d270-7413-4cf6-aa9f-eb9e7b50a55b.png)
 
+![image](https://user-images.githubusercontent.com/58280145/133074974-6729d271-349f-47fe-90f5-e6936b2bde42.png)
+
+![image](https://user-images.githubusercontent.com/58280145/133075118-79c287dc-d924-4f85-afb5-ae4e0ad44f22.png)
+
+![image](https://user-images.githubusercontent.com/58280145/133075147-17d65047-ac4c-464b-a063-e8d3d57895d6.png)
 
 
 Technologies:
@@ -23,10 +24,11 @@ Technologies:
 - Junit and Mockito core for test cases.
 
 Web API:
-* GET /forecast/day/{day} Retrieves forecast for an specific day.
-* GET /forecast/generateForecast/{years} Generates forecast for a given amount of years and persist the information on the database.
+- GET /forecast/day/{day} Retrieves forecast for an specific day.
+- GET /forecast/generateForecast/{years} Generates forecast for a given amount of years and persist the information on the database.
 
-Pending taskst
+Pending tasks:
 - Swagger for documentation.
 - Finish Junit cases.
 - Generate report base on scheduler or cron annotations.
+- Fix issue with JPA, MySql data type and request by day.

@@ -1,6 +1,7 @@
 package com.lucasmoreno.weatherchannel.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +33,8 @@ public class SolarSystemController {
     }
     
     @GetMapping(value = "/day/{day}")
-    public SolarSystemForecastEntity getForecastByDay(@PathVariable long day) throws SolarSystemException, SolarSystemServiceException {
-    	return solarSystemForecastRepository.getById(day);    	
+    public SolarSystemForecastEntity getForecastByDay(@PathVariable Long day){
+    	return solarSystemForecastRepository.findById(day).orElseThrow(ResourceNotFoundException::new);   	    	
     }
 
 }

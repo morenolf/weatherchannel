@@ -13,6 +13,7 @@
 	<artifactId>WeatherChannel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>WeatherChannel</name>
+	<packaging>jar</packaging>
 	<description>Weather Channel for Solar System</description>
 	<properties>
 		<java.version>11</java.version>
@@ -63,6 +64,11 @@
 			<plugin>
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>*/*Test.java</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 
 			<plugin>

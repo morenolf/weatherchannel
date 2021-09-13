@@ -35,4 +35,5 @@ public class SolarSystemController {
     public SolarSystemForecastEntity getForecastByDay(@PathVariable long day) throws SolarSystemException, SolarSystemServiceException {
     	return solarSystemForecastRepository.getById(day);    	
     }
+
 }
